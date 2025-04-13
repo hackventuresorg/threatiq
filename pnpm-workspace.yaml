@@ -2,5 +2,6 @@ packages:
   - apps/*
   - packages/*
 onlyBuiltDependencies:
-  - "@swc/core"
+  - '@clerk/shared'
+  - '@swc/core'
   - esbuild
