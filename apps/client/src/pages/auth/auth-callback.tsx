@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function AuthCallback() {
   const { isSignedIn, isLoaded, user } = useUser();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const saveUser = async () => {
       if (isLoaded && user) {
@@ -24,7 +24,7 @@ export default function AuthCallback() {
       }
     };
     saveUser();
-  }, [isLoaded, user]);
+  }, [isLoaded, user, isSignedIn, navigate]);
 
   return <div className="h-screen flex justify-center items-center">Loading...</div>;
 }

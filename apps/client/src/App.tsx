@@ -4,17 +4,22 @@ import ProtectedRoute from "./components/ui/ProtectedRoute";
 import AuthCallback from "./pages/auth/auth-callback";
 import { Navbar } from "./components/layout/Navbar";
 import Home from "./pages/Introduction/Home";
+import { useUser } from "@clerk/clerk-react";
 
 function App() {
+  const { user } = useUser();
+
+  console.log("User::", user);
+
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/login" element={<Login />}/>
+        <Route path="/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
-        {/* <Route path="/" element={<><Button/></>}/> */}
+          {/* <Route path="/" element={<><Button/></>}/> */}
         </Route>
-        <Route path="/auth-callback" element={<AuthCallback/>}/>
+        <Route path="/auth-callback" element={<AuthCallback />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
       </Routes>
