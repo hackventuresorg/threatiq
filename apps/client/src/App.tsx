@@ -1,10 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/auth/Login";
-import ProtectedRoute from "./components/ui/ProtectedRoute";
+import ProtectedRoute from "./components/generic/ProtectedRoute";
 import AuthCallback from "./pages/auth/auth-callback";
 import { Navbar } from "./components/layout/Navbar";
 import Home from "./pages/Introduction/Home";
 import { useUser } from "@clerk/clerk-react";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 function App() {
   const { user } = useUser();
@@ -16,12 +17,16 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route element={<ProtectedRoute />}>
-          {/* <Route path="/" element={<><Button/></>}/> */}
-        </Route>
         <Route path="/auth-callback" element={<AuthCallback />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+        <Route
+          path="*"
+          element={<div className="flex justify-center items-center h-[80vh]">404</div>}
+        />
       </Routes>
     </>
   );

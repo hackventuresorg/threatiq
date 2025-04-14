@@ -4,7 +4,7 @@ export default function ProtectedRoute() {
   const { isSignedIn, isLoaded } = useUser();
 
   if (!isLoaded) {
-    return <div className="h-screen flex justify-center items-center">Loading...</div>;
+    return <div className="h-[80vh] flex justify-center items-center">Loading...</div>;
   }
 
   if (!isSignedIn) {

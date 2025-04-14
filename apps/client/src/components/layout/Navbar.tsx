@@ -1,11 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { SignInButton, SignUpButton } from "@clerk/clerk-react";
-import { Menu, Shield, X } from "lucide-react";
+import { SignOutButton, useUser } from "@clerk/clerk-react";
+import { Menu, Shield, X, User } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isSignedIn, isLoaded, user } = useUser();
+  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    navigate("/login");
+  };
 
   return (
     <nav className="sticky top-0 w-full z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm">
@@ -18,23 +26,52 @@ export function Navbar() {
             <Shield className="h-6 w-6" />
             <span className="text-lg tracking-tight">ThreatIQ</span>
           </a>
+          {isLoaded && isSignedIn && (
+            <div className="flex items-center space-x-3">
+              <Button variant="link" size="sm" onClick={() => navigate("/dashboard")}>
+                <span className="text-sm font-medium">Dashboard</span>
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="hidden md:flex items-center space-x-3">
-          <SignInButton mode="modal">
+          {isLoaded && isSignedIn ? (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                {user?.imageUrl ? (
+                  <img
+                    src={user.imageUrl}
+                    alt={user.fullName || "User"}
+                    className="h-8 w-8 rounded-full object-cover border border-border"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                    <User className="h-4 w-4" />
+                  </div>
+                )}
+                <span className="text-sm font-medium">{user?.firstName || "User"}</span>
+              </div>
+              <SignOutButton>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground px-4"
+                >
+                  Sign Out
+                </Button>
+              </SignOutButton>
+            </div>
+          ) : (
             <Button
               variant="ghost"
               size="sm"
               className="text-muted-foreground hover:text-foreground px-4"
+              onClick={handleSignIn}
             >
-              Sign In
+              Sign In / Sign Up
             </Button>
-          </SignInButton>
-          <SignUpButton mode="modal">
-            <Button size="sm" className="shadow-sm px-4">
-              Sign Up
-            </Button>
-          </SignUpButton>
+          )}
         </div>
 
         <div className="flex md:hidden">
@@ -57,16 +94,39 @@ export function Navbar() {
         )}
       >
         <div className="container px-4 sm:px-6 md:px-8 py-4 flex flex-col space-y-3">
-          <SignInButton mode="modal">
-            <Button variant="ghost" size="sm" className="w-full justify-start px-4 py-2.5">
-              Sign In
+          {isLoaded && isSignedIn ? (
+            <>
+              <div className="flex items-center gap-2 mb-2">
+                {user?.imageUrl ? (
+                  <Avatar>
+                    <AvatarImage src={user.imageUrl} />
+                    <AvatarFallback>
+                      <User className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                    <User className="h-4 w-4" />
+                  </div>
+                )}
+                <span className="text-sm font-medium">{user?.firstName || "User"}</span>
+              </div>
+              <SignOutButton>
+                <Button variant="ghost" size="sm" className="w-full justify-start px-4 py-2.5">
+                  Sign Out
+                </Button>
+              </SignOutButton>
+            </>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start px-4 py-2.5"
+              onClick={handleSignIn}
+            >
+              Sign In / Sign Up
             </Button>
-          </SignInButton>
-          <SignUpButton mode="modal">
-            <Button size="sm" className="w-full justify-start shadow-sm px-4 py-2.5">
-              Sign Up
-            </Button>
-          </SignUpButton>
+          )}
         </div>
       </div>
     </nav>

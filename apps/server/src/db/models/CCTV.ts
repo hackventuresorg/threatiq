@@ -1,3 +1,4 @@
+// apps/server/src/db/models/CCTV.ts
 import mongoose, { Document, Schema, Types } from "mongoose";
 
 interface ICCTV {
@@ -12,21 +13,22 @@ interface ICCTV {
   fullRTSPUrl?: string;
   isActive: boolean;
   streamHealth?: "online" | "offline" | "unstable";
-  createdAt: Date;
-  updatedAt: Date;
+  lastHealthCheck?: Date;
   organization: Types.ObjectId;
+  tags?: string[];
+  detectionSettings?: {
+    detectFire: boolean;
+    detectViolence: boolean;
+    detectRobbery: boolean;
+    detectSuspiciousBehavior: boolean;
+    customDetections?: string[];
+  };
 }
 
 interface CCTVDocument extends ICCTV, Document {}
 
 const CCTVSchema = new Schema<CCTVDocument>(
   {
-    id: {
-      type: String,
-      required: [true, "Please provide a unique ID"],
-      unique: true,
-      trim: true,
-    },
     name: {
       type: String,
       required: [true, "Please provide a name"],
@@ -56,6 +58,7 @@ const CCTVSchema = new Schema<CCTVDocument>(
       type: String,
       required: [true, "Please provide a password"],
       trim: true,
+      select: false,
     },
     rtspPath: {
       type: String,
@@ -81,13 +84,66 @@ const CCTVSchema = new Schema<CCTVDocument>(
       enum: ["online", "offline", "unstable"],
       default: "offline",
     },
+    lastHealthCheck: {
+      type: Date,
+      default: Date.now,
+    },
+    tags: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
     organization: {
       type: Schema.Types.ObjectId,
       ref: "Organization",
       required: [true, "Please provide an organization"],
+      index: true,
+    },
+    detectionSettings: {
+      detectFire: {
+        type: Boolean,
+        default: true,
+      },
+      detectViolence: {
+        type: Boolean,
+        default: true,
+      },
+      detectRobbery: {
+        type: Boolean,
+        default: true,
+      },
+      detectSuspiciousBehavior: {
+        type: Boolean,
+        default: true,
+      },
+      customDetections: [
+        {
+          type: String,
+          trim: true,
+        },
+      ],
     },
   },
   { timestamps: true }
 );
+
+CCTVSchema.pre("save", function (next) {
+  if (
+    this.isModified("publicIp") ||
+    this.isModified("port") ||
+    this.isModified("username") ||
+    this.isModified("password") ||
+    this.isModified("rtspPath") ||
+    this.isModified("protocol")
+  ) {
+    if (this.protocol === "rtsp") {
+      this.fullRTSPUrl = `rtsp://${this.username}:${this.password}@${this.publicIp}:${this.port}${this.rtspPath}`;
+    } else {
+      this.fullRTSPUrl = `${this.protocol}://${this.publicIp}:${this.port}${this.rtspPath}`;
+    }
+  }
+  next();
+});
 
 export default mongoose.model<CCTVDocument>("CCTV", CCTVSchema);
