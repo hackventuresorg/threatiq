@@ -26,7 +26,7 @@ export default function Dashboard() {
     };
 
     checkAndSaveUser();
-  }, []);
+  }, [isLoaded, isSignedIn]);
 
   return <div>Dashboard</div>;
 }
