@@ -1,4 +1,4 @@
-import CreateOrgModal from "@/components/organization/createOrgModal";
+import CreateOrgModal from "@/components/modal/CreateOrgModal";
 import { login, UserDetails, userExists } from "@/queries/auth";
 import { fetchOrganizations } from "@/queries/organization";
 import { useUser } from "@clerk/clerk-react";
