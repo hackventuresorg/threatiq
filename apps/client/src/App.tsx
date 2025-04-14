@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import ProtectedRoute from "./components/generic/ProtectedRoute";
-import AuthCallback from "./pages/auth/auth-callback";
 import { Navbar } from "./components/layout/Navbar";
 import Home from "./pages/Introduction/Home";
 import { useUser } from "@clerk/clerk-react";
@@ -17,7 +16,6 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/auth-callback" element={<AuthCallback />} />
         <Route path="/" element={<Home />} />
 
         <Route element={<ProtectedRoute />}>
