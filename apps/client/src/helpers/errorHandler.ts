@@ -1,4 +1,4 @@
-const getError = (error: unknown) => {
+const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) {
     return error.message;
   }
@@ -8,7 +8,7 @@ const getError = (error: unknown) => {
   if (typeof error === "object" && error !== null) {
     return JSON.stringify(error);
   }
-  return String(error);
+  return String(error) || "Something went wrong";
 };
 
-export { getError };
+export { getErrorMessage };

@@ -1,6 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
-
+import { SERVER_URL } from "./environments";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false },
@@ -8,11 +8,14 @@ export const queryClient = new QueryClient({
 });
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL,
+  baseURL: `${SERVER_URL}/api`,
 });
 
-export const setClerkToken = (clerk: any) => {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${clerk.session.getToken()}`;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const setClerkToken = async (clerk: any) => {
+  const token = (await clerk.session.getToken()) as string;
+
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
 
 apiClient.interceptors.request.use((config) => {

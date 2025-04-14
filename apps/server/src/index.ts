@@ -12,6 +12,15 @@ app.use(express.json());
 
 connectDB();
 
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function (body) {
+    console.log(new Date().toLocaleString(), req.method, req.originalUrl, res.statusCode);
+    return originalSend.call(this, body);
+  };
+  next();
+});
+
 app.use("/api/auth", authRoutes);
 
 app.use(errorMiddleware);

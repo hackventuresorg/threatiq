@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-
+import { getErrorMessage } from "../helpers/errorHandler";
 export const AppResponse = (res: Response, statusCode: number, message?: string, data?: any) => {
   res.status(statusCode).json({ message, data });
 };
 
 export const errorMiddleware = (err: AppError, req: Request, res: Response, next: NextFunction) => {
-  console.error("Request error:", err.message);
+  console.error("Request error:", getErrorMessage(err));
   const statusCode: number = err.statusCode || 500;
   const message =
     statusCode === 500 ? "Internal server error" : getErrorMsg(err) || "Internal server error";
@@ -13,6 +13,8 @@ export const errorMiddleware = (err: AppError, req: Request, res: Response, next
   res.status(statusCode).json({
     message,
   });
+
+  next();
 };
 
 export function getErrorMsg(error: unknown) {
