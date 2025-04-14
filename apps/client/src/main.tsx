@@ -17,7 +17,7 @@ const client = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/auth-callback">
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/dashboard">
         <QueryClientProvider client={client}>
           <App />
         </QueryClientProvider>

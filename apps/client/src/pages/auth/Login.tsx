@@ -11,7 +11,7 @@ export default function Login() {
 
   return (
     <div className="flex justify-center items-center h-[80vh]">
-      <SignIn />
+      <SignIn redirectUrl='/dashboard'/>
     </div>
   );
 }
