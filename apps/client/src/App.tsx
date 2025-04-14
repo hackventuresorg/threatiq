@@ -4,13 +4,20 @@ import ProtectedRoute from "./components/generic/ProtectedRoute";
 import AuthCallback from "./pages/auth/auth-callback";
 import { Navbar } from "./components/layout/Navbar";
 import Home from "./pages/Introduction/Home";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import Dashboard from "./pages/dashboard/Dashboard";
+import { useEffect } from "react";
+import { setClerkToken } from "./axios";
 
 function App() {
   const { user } = useUser();
+  const clerk = useClerk();
 
-  console.log("User::", user);
+  useEffect(() => {
+    if (user && clerk) {
+      setClerkToken(clerk);
+    }
+  }, [clerk, user]);
 
   return (
     <>
