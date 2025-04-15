@@ -7,6 +7,7 @@ export interface IOrganization {
   location: string;
   type: string;
   users: Types.ObjectId[];
+  createdBy: Types.ObjectId;
   cctvs: Types.ObjectId[];
   logoUrl?: string;
   isActive: boolean;
@@ -51,6 +52,10 @@ const OrganizationSchema = new Schema<OrganizationDocument>(
         ref: "User",
       },
     ],
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     cctvs: [
       {
         type: Schema.Types.ObjectId,

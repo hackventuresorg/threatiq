@@ -4,6 +4,7 @@ import { PORT } from "./environments";
 import connectDB from "./db";
 import authRoutes from "./routes/auth";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
+import organizationRoutes from "./routes/organization";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/organization", organizationRoutes);
 
 app.use(errorMiddleware);
 

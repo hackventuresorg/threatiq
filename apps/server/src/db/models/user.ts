@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Types } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUser {
   firstName: string;
@@ -6,7 +6,6 @@ export interface IUser {
   fullName?: string;
   email: string;
   imageUrl?: string;
-  organizations: Types.ObjectId[];
   clerkId: string;
 }
 
@@ -39,12 +38,6 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       trim: true,
     },
-    organizations: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Organization",
-      },
-    ],
     clerkId: {
       type: String,
       required: [true, "Please provide a Clerk user ID"],

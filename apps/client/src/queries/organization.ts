@@ -6,6 +6,6 @@ export async function fetchOrganizations() {
 }
 
 export async function createOrganization(org: IOrganizations) {
-  const { data } = await apiClient.post("/create-organization", org);
+  const { data } = await apiClient.post("/organization", org);
   return data;
 }

@@ -1,5 +1,5 @@
-import CCTV from './CCTV.js';
-import User from './user.js';
-import Organization from './organization.js';
+import CCTV from "./CCTV";
+import User from "./user";
+import Organization from "./organization";
 
 export { CCTV, User, Organization };

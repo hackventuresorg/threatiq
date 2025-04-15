@@ -11,15 +11,17 @@ export const apiClient = axios.create({
   baseURL: `${SERVER_URL}/api`,
 });
 
+let token: string | null = null;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setClerkToken = async (clerk: any) => {
-  const token = (await clerk.session.getToken()) as string;
-
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  const accessToken = (await clerk.session.getToken()) as string;
+  if (accessToken) {
+    token = accessToken;
+  }
 };
 
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

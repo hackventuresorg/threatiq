@@ -12,6 +12,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { getErrorMessage } from "@/helpers/errorHandler";
 
 interface CreateOrgModalProps {
   isOpen: boolean;
@@ -40,11 +42,12 @@ export default function CreateOrgModal({ isOpen, onClose }: CreateOrgModalProps)
     mutationFn: createOrganization,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["get-org"] });
+      toast.success("Organization created successfully");
       reset();
       onClose();
     },
     onError: (error) => {
-      console.error("Error creating organization:", error);
+      toast.error(getErrorMessage(error));
     },
   });
 

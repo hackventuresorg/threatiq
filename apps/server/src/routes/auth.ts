@@ -8,7 +8,7 @@ router.post("/login", authenticateUser, async (req: Request, res: Response, next
   try {
     const userData = req.body as UserDetails;
     const clerkId = req.headers.clerk_user_id as string;
-    console.log("clerkId", clerkId);
+
     if (!clerkId) {
       res.status(401).json({ message: "Unauthorized: User ID not found in token" });
       return;
