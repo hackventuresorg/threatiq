@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, Video, MapPin, Hash } from "lucide-react";
 import { useParams } from "react-router-dom";
 
-
 export default function Organization() {
   const [isCreateCctvOpen, setIsCreateCctvOpen] = useState(false);
-  const {orgId} = useParams();
+  const { orgId } = useParams();
 
   const {
     data: cctvs,
@@ -17,7 +16,7 @@ export default function Organization() {
     isError,
   } = useQuery<ICctv[]>({
     queryKey: ["get-cctvs", orgId],
-    queryFn:() => fetchCctvs(orgId || ""),
+    queryFn: () => fetchCctvs(orgId || ""),
   });
 
   return (
@@ -53,47 +52,48 @@ export default function Organization() {
               {cctvs.map((cam: ICctv, i: number) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 flex flex-col justify-between"
                 >
-                  <div className="h-24 bg-gradient-to-r from-gray-600 to-gray-900 flex items-center justify-center text-white text-xl font-bold">
-                    <Video className="h-6 w-6 mr-2" />
-                    {cam.name}
-                  </div>
-
-                  <div className="pt-6 px-6 pb-6">
-                    <div className="flex justify-between items-start">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-md bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300">
+                        <Video className="h-5 w-5" />
+                      </div>
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                          RTSP: <span className="font-mono break-words">{cam.rtspPath}</span>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {cam.name}
+                        </h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 font-mono break-all">
+                          {cam.rtspPath}
                         </p>
                       </div>
-                      <div
-                        className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                          cam.isActive
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                            : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                        }`}
-                      >
-                        {cam.isActive ? "Active" : "Inactive"}
-                      </div>
                     </div>
+                    <div
+                      className={`px-2 py-0.5 text-xs font-medium rounded-full whitespace-nowrap ${
+                        cam.isActive
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                      }`}
+                    >
+                      {cam.isActive ? "Active" : "Inactive"}
+                    </div>
+                  </div>
 
-                    <div className="mt-4 space-y-2">
-                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                        <MapPin className="h-4 w-4 mr-2" />
-                        {cam.location}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                        <Hash className="h-4 w-4 mr-2" />
-                        {cam.camCode}
-                      </div>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      {cam.location}
                     </div>
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                      <Hash className="h-4 w-4 mr-2" />
+                      {cam.camCode}
+                    </div>
+                  </div>
 
-                    <div className="mt-6">
-                      <Button variant="outline" size="sm" className="w-full">
-                        View Stream
-                      </Button>
-                    </div>
+                  <div className="mt-6">
+                    <Button variant="outline" size="sm" className="w-full">
+                      View Stream
+                    </Button>
                   </div>
                 </div>
               ))}
