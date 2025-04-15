@@ -3,23 +3,12 @@ import Login from "./pages/auth/Login";
 import ProtectedRoute from "./components/generic/ProtectedRoute";
 import { Navbar } from "./components/layout/Navbar";
 import Home from "./pages/Introduction/Home";
-import { useUser, useClerk } from "@clerk/clerk-react";
 import Dashboard from "./pages/dashboard/Dashboard";
-import { useEffect } from "react";
-import { setClerkToken } from "./axios";
+import { AuthProvider } from "./context/AuthProvider";
 
 function App() {
-  const { user } = useUser();
-  const clerk = useClerk();
-
-  useEffect(() => {
-    if (user && clerk) {
-      setClerkToken(clerk);
-    }
-  }, [clerk, user]);
-
   return (
-    <>
+    <AuthProvider>
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -33,7 +22,7 @@ function App() {
           element={<div className="flex justify-center items-center h-[80vh]">404</div>}
         />
       </Routes>
-    </>
+    </AuthProvider>
   );
 }
 

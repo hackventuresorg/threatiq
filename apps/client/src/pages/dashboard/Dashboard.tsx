@@ -1,30 +1,12 @@
-import { login, UserDetails } from "@/queries/auth";
-import { useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { LOGIN_MUTATION_KEY } from "../../constants";
-import { toast } from "sonner";
-import { getErrorMessage } from "@/helpers/errorHandler";
+import { useState } from "react";
 import { fetchOrganizations } from "@/queries/organization";
 import CreateOrgModal from "@/components/modal/CreateOrgModal";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Building2, MapPin, Tag } from "lucide-react";
 
 export default function Dashboard() {
-  const { isLoaded, isSignedIn, user } = useUser();
-  const hasLoggedIn = useRef(false);
-
   const [isCreateOrgOpen, setIsCreateOrgOpen] = useState(false);
-
-  const { mutate: loginUser } = useMutation({
-    mutationKey: [LOGIN_MUTATION_KEY],
-    mutationFn: (userDetails: UserDetails) => login(userDetails),
-    onSuccess: () => {},
-    onError: (error: unknown) => {
-      toast.error(getErrorMessage(error));
-    },
-  });
 
   const {
     data: organizations,
@@ -34,20 +16,6 @@ export default function Dashboard() {
     queryKey: ["get-org"],
     queryFn: fetchOrganizations,
   });
-
-  useEffect(() => {
-    if (isLoaded && isSignedIn && user && !hasLoggedIn.current) {
-      hasLoggedIn.current = true;
-      loginUser({
-        clerkId: user.id,
-        email: user.primaryEmailAddress?.emailAddress,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        imageUrl: user.imageUrl,
-        fullName: `${user.firstName} ${user.lastName}`,
-      });
-    }
-  }, [isLoaded, isSignedIn, user, loginUser]);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-8 px-6">
