@@ -7,6 +7,7 @@ import { useUser, useClerk } from "@clerk/clerk-react";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { useEffect } from "react";
 import { setClerkToken } from "./axios";
+import Organization from "./pages/dashboard/Organization";
 
 function App() {
   const { user } = useUser();
@@ -27,6 +28,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/organization/:orgId" element={<Organization />} />
         </Route>
         <Route
           path="*"
