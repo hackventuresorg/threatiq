@@ -11,10 +11,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Video,
-  PlusCircle,
-} from "lucide-react";
+import { Video, PlusCircle } from "lucide-react";
 
 interface CreateCctvModalProps {
   isOpen: boolean;
@@ -32,8 +29,6 @@ interface ICctv {
   camCode: string;
   isActive: boolean;
 }
-
-
 
 export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
   const {
@@ -92,7 +87,9 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name */}
           <div>
-            <label htmlFor="name" className="text-sm font-medium">Camera Name</label>
+            <label htmlFor="name" className="text-sm font-medium">
+              Camera Name
+            </label>
             <Input
               id="name"
               placeholder="e.g., Main Gate"
@@ -103,29 +100,39 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
 
           {/* RTSP Path */}
           <div>
-            <label htmlFor="rtspPath" className="text-sm font-medium">RTSP Path</label>
+            <label htmlFor="rtspPath" className="text-sm font-medium">
+              RTSP Path
+            </label>
             <Input
               id="rtspPath"
               placeholder="rtsp://user:pass@ip:port/path"
               {...register("rtspPath", { required: "RTSP path is required" })}
             />
-            {errors.rtspPath && <p className="text-sm text-destructive">{errors.rtspPath.message}</p>}
+            {errors.rtspPath && (
+              <p className="text-sm text-destructive">{errors.rtspPath.message}</p>
+            )}
           </div>
 
           {/* Public IP */}
           <div>
-            <label htmlFor="publicIp" className="text-sm font-medium">Public IP</label>
+            <label htmlFor="publicIp" className="text-sm font-medium">
+              Public IP
+            </label>
             <Input
               id="publicIp"
               placeholder="e.g., 192.168.0.1"
               {...register("publicIp", { required: "Public IP is required" })}
             />
-            {errors.publicIp && <p className="text-sm text-destructive">{errors.publicIp.message}</p>}
+            {errors.publicIp && (
+              <p className="text-sm text-destructive">{errors.publicIp.message}</p>
+            )}
           </div>
 
           {/* Port */}
           <div>
-            <label htmlFor="port" className="text-sm font-medium">Port</label>
+            <label htmlFor="port" className="text-sm font-medium">
+              Port
+            </label>
             <Input
               id="port"
               type="number"
@@ -137,39 +144,40 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
 
           {/* Username */}
           <div>
-            <label htmlFor="username" className="text-sm font-medium">Username</label>
-            <Input
-              id="username"
-              placeholder="Username"
-              {...register("username")}
-            />
+            <label htmlFor="username" className="text-sm font-medium">
+              Username
+            </label>
+            <Input id="username" placeholder="Username" {...register("username")} />
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="text-sm font-medium">Password</label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Password"
-              {...register("password")}
-            />
+            <label htmlFor="password" className="text-sm font-medium">
+              Password
+            </label>
+            <Input id="password" type="password" placeholder="Password" {...register("password")} />
           </div>
 
           {/* Location */}
           <div>
-            <label htmlFor="location" className="text-sm font-medium">Location</label>
+            <label htmlFor="location" className="text-sm font-medium">
+              Location
+            </label>
             <Input
               id="location"
               placeholder="e.g., Entrance Lobby"
               {...register("location", { required: "Location is required" })}
             />
-            {errors.location && <p className="text-sm text-destructive">{errors.location.message}</p>}
+            {errors.location && (
+              <p className="text-sm text-destructive">{errors.location.message}</p>
+            )}
           </div>
 
           {/* Cam Code */}
           <div>
-            <label htmlFor="camCode" className="text-sm font-medium">Camera Code</label>
+            <label htmlFor="camCode" className="text-sm font-medium">
+              Camera Code
+            </label>
             <Input
               id="camCode"
               placeholder="e.g., CAM123"
@@ -181,12 +189,21 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
           {/* Is Active */}
           <div className="flex items-center space-x-2">
             <input type="checkbox" id="isActive" {...register("isActive")} />
-            <label htmlFor="isActive" className="text-sm font-medium">Active</label>
+            <label htmlFor="isActive" className="text-sm font-medium">
+              Active
+            </label>
           </div>
 
           {/* Buttons */}
           <DialogFooter className="mt-4">
-            <Button type="button" variant="outline" onClick={() => { reset(); onClose(); }}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                reset();
+                onClose();
+              }}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={cctvMutation.isPending || isSubmitting}>
