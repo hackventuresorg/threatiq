@@ -1,8 +1,8 @@
 import { apiClient } from "@/axios";
 
 export async function fetchOrganizations() {
-  // const { data } = await apiClient.get("/get-organization");
-  return [];
+  const { data } = await apiClient.get("/organization/getall");
+  return data;
 }
 
 export async function createOrganization(org: IOrganizations) {

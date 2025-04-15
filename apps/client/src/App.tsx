@@ -5,6 +5,7 @@ import { Navbar } from "./components/layout/Navbar";
 import Home from "./pages/Introduction/Home";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { AuthProvider } from "./context/AuthProvider";
+import Organization from "./pages/dashboard/Organization";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/organization/:orgId" element={<Organization />} />
         </Route>
         <Route
           path="*"
