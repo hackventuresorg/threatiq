@@ -2,7 +2,8 @@ import { apiClient } from "@/axios";
 
 export async function fetchCctvs(orgId: string) {
   const { data } = await apiClient.get(`/cctv/getall?organization=${orgId}`);
-  return data;
+  console.log("data", data)
+  return data.cctvs;
 }
 
 export async function createCctv(cctvData: ICctv) {
