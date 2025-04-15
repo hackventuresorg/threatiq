@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/axios";
+import { createCctv } from "@/queries/cctv";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,9 +33,7 @@ interface ICctv {
   isActive: boolean;
 }
 
-const createCctv = async (data: ICctv) => {
-  // POST request to your backend
-};
+
 
 export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
   const {
