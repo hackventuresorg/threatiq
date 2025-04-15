@@ -8,4 +8,5 @@ interface ICctv {
   location: string;
   camCode: string;
   isActive: boolean;
+  organization?: string;
 }

@@ -5,6 +5,7 @@ import CreateOrgModal from "@/components/modal/CreateOrgModal";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Building2, MapPin, Tag } from "lucide-react";
 import { GET_ORGANIZATIONS_QUERY_KEY } from "@/constants";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const [isCreateOrgOpen, setIsCreateOrgOpen] = useState(false);
@@ -89,7 +90,7 @@ export default function Dashboard() {
               {organizations.map((org: IOrganizations) => (
                 <div
                   key={org?._id}
-                  className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
+                  className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 p-6"
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-4">
@@ -138,9 +139,11 @@ export default function Dashboard() {
                   </div>
 
                   <div className="mt-6">
-                    <Button variant="outline" size="sm" className="w-full">
-                      View Details
-                    </Button>
+                    <Link to={`/organization/${org?._id}`}>
+                      <Button variant="outline" size="sm" className="w-full">
+                        View Details
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))}

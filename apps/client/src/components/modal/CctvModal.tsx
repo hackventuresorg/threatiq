@@ -12,25 +12,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Video, PlusCircle } from "lucide-react";
-
+import { useParams } from "react-router-dom";
 interface CreateCctvModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface ICctv {
-  name: string;
-  rtspPath: string;
-  publicIp: string;
-  port: string;
-  username: string;
-  password: string;
-  location: string;
-  camCode: string;
-  isActive: boolean;
-}
-
 export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
+  const { orgId } = useParams();
+
   const {
     register,
     handleSubmit,
@@ -63,7 +53,7 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
   });
 
   const onSubmit: SubmitHandler<ICctv> = (data) => {
-    cctvMutation.mutate(data);
+    cctvMutation.mutate({ ...data, organization: orgId });
   };
 
   return (
