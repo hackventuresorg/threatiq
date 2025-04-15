@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/helpers/errorHandler";
+import { GET_ORGANIZATIONS_QUERY_KEY, CREATE_ORGANIZATION_MUTATION_KEY } from "@/constants";
 
 interface CreateOrgModalProps {
   isOpen: boolean;
@@ -39,9 +40,10 @@ export default function CreateOrgModal({ isOpen, onClose }: CreateOrgModalProps)
   });
 
   const orgMutation = useMutation({
+    mutationKey: [CREATE_ORGANIZATION_MUTATION_KEY],
     mutationFn: createOrganization,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["get-org"] });
+      queryClient.invalidateQueries({ queryKey: [GET_ORGANIZATIONS_QUERY_KEY] });
       toast.success("Organization created successfully");
       reset();
       onClose();
@@ -179,7 +181,7 @@ export default function CreateOrgModal({ isOpen, onClose }: CreateOrgModalProps)
                   className={`pl-9 ${errors.logoUrl ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
                   {...register("logoUrl", {
                     pattern: {
-                      value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/,
+                      value: /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/,
                       message: "Please enter a valid URL",
                     },
                   })}

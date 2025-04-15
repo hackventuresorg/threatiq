@@ -1,21 +1,39 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchOrganizations } from "@/queries/organization";
 import CreateOrgModal from "@/components/modal/CreateOrgModal";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Building2, MapPin, Tag } from "lucide-react";
+import { GET_ORGANIZATIONS_QUERY_KEY } from "@/constants";
 
 export default function Dashboard() {
   const [isCreateOrgOpen, setIsCreateOrgOpen] = useState(false);
+  const [isRefetching, setIsRefetching] = useState(false);
 
   const {
-    data: organizations,
+    data: organizationsRes,
     isLoading: orgLoading,
     isError: orgError,
+    refetch,
+    isFetching,
   } = useQuery({
-    queryKey: ["get-org"],
+    queryKey: [GET_ORGANIZATIONS_QUERY_KEY],
     queryFn: fetchOrganizations,
   });
+
+  useEffect(() => {
+    if (!isFetching) {
+      setIsRefetching(false);
+    }
+  }, [isFetching]);
+
+  const handleRefetch = async () => {
+    setIsRefetching(true);
+    await refetch();
+  };
+
+  const organizations = organizationsRes?.allOrgs;
+  const isLoadingData = orgLoading || isFetching || isRefetching;
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-8 px-6">
@@ -29,10 +47,19 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <h2 className="text-2xl font-medium text-gray-900 dark:text-gray-100 mb-6">
-            Your Organizations
-          </h2>
-          {orgLoading ? (
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-medium text-gray-900 dark:text-gray-100">
+              Your Organizations
+            </h2>
+            {isLoadingData && (
+              <div className="flex items-center text-sm text-blue-600 dark:text-blue-400">
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Loading...
+              </div>
+            )}
+          </div>
+
+          {orgLoading && !isFetching ? (
             <div className="flex justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
             </div>
@@ -41,15 +68,27 @@ export default function Dashboard() {
               <div className="text-red-600 dark:text-red-400 font-medium">
                 Error loading organizations.
               </div>
-              <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
-                Try Again
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={handleRefetch}
+                disabled={isLoadingData}
+              >
+                {isLoadingData ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    Trying Again...
+                  </>
+                ) : (
+                  "Try Again"
+                )}
               </Button>
             </div>
           ) : organizations && organizations.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {organizations.map((org: IOrganizations) => (
                 <div
-                  key={org.slug}
+                  key={org?._id}
                   className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
                 >
                   <div className="h-24 bg-gradient-to-r from-blue-500 to-indigo-600 relative">

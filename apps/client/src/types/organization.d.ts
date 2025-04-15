@@ -8,4 +8,5 @@ interface IOrganizations {
   cctvs?: string[];
   isActive?: boolean;
   slug?: string;
+  _id?: string;
 }
