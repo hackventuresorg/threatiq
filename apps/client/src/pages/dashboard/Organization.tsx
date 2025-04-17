@@ -64,7 +64,7 @@ export default function Organization() {
                           {cam.name}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 font-mono break-all">
-                          {cam.rtspPath}
+                          {cam.fullUrl}
                         </p>
                       </div>
                     </div>

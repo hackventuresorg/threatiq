@@ -4,13 +4,7 @@ import { BadRequestError } from "../middlewares/errorMiddleware";
 const createCCTV = async ({
   name,
   location,
-  publicIp,
-  port,
-  username,
-  password,
-  rtspPath,
-  protocol,
-  fullRTSPUrl,
+  fullUrl,
   isActive,
   streamHealth,
   organization,
@@ -18,8 +12,8 @@ const createCCTV = async ({
   detectionSettings,
   user,
 }: any) => {
-  if (!name || !location || !organization) {
-    throw new BadRequestError("Please provide all  required fields");
+  if (!name || !location || !organization || !fullUrl) {
+    throw new BadRequestError("Please provide all required fields");
   }
 
   const org = await Organization.findOne({
@@ -34,13 +28,7 @@ const createCCTV = async ({
   const cctv = await CCTV.create({
     name,
     location,
-    publicIp,
-    port,
-    username,
-    password,
-    rtspPath,
-    protocol,
-    fullRTSPUrl,
+    fullUrl,
     isActive,
     streamHealth,
     organization: org?._id,

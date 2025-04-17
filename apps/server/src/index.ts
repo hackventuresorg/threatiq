@@ -6,6 +6,8 @@ import authRoutes from "./routes/auth";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
 import organizationRoutes from "./routes/organization";
 import cctvRoutes from "./routes/cctv";
+import { startRtspThreatPipeline } from "./controllers/rtsp_threat_pipeline";
+
 const app = express();
 
 app.use(cors());
@@ -29,4 +31,8 @@ app.use("/api/cctv", cctvRoutes);
 app.use(errorMiddleware);
 app.listen(PORT, () => {
   console.log(`🚀Server is running on http://localhost:${PORT}`);
+
+  startRtspThreatPipeline().catch((err) =>
+    console.error("Failed to start RTSP threat pipeline:", err)
+  );
 });

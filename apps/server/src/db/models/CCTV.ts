@@ -1,16 +1,9 @@
-// apps/server/src/db/models/CCTV.ts
 import mongoose, { Document, Schema, Types } from "mongoose";
 
 interface ICCTV {
   name: string;
   location: string;
-  publicIp: string;
-  port: number;
-  username: string;
-  password: string;
-  rtspPath: string;
-  protocol: "rtsp" | "http" | "https";
-  fullRTSPUrl?: string;
+  fullUrl: string;
   isActive: boolean;
   streamHealth?: "online" | "offline" | "unstable";
   lastHealthCheck?: Date;
@@ -39,40 +32,9 @@ const CCTVSchema = new Schema<CCTVDocument>(
       required: [true, "Please provide a location"],
       trim: true,
     },
-    publicIp: {
+    fullUrl: {
       type: String,
-      required: [true, "Please provide a public IP or domain"],
-      trim: true,
-    },
-    port: {
-      type: Number,
-      required: [true, "Please provide a port number"],
-      default: 554,
-    },
-    username: {
-      type: String,
-      required: [true, "Please provide a username"],
-      trim: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Please provide a password"],
-      trim: true,
-      select: false,
-    },
-    rtspPath: {
-      type: String,
-      required: [true, "Please provide an RTSP path"],
-      trim: true,
-    },
-    protocol: {
-      type: String,
-      enum: ["rtsp", "http", "https"],
-      default: "rtsp",
-      required: [true, "Please provide a protocol"],
-    },
-    fullRTSPUrl: {
-      type: String,
+      required: [true, "Please provide a full URL for the CCTV stream"],
       trim: true,
     },
     isActive: {
@@ -127,23 +89,5 @@ const CCTVSchema = new Schema<CCTVDocument>(
   },
   { timestamps: true }
 );
-
-CCTVSchema.pre("save", function (next) {
-  if (
-    this.isModified("publicIp") ||
-    this.isModified("port") ||
-    this.isModified("username") ||
-    this.isModified("password") ||
-    this.isModified("rtspPath") ||
-    this.isModified("protocol")
-  ) {
-    if (this.protocol === "rtsp") {
-      this.fullRTSPUrl = `rtsp://${this.username}:${this.password}@${this.publicIp}:${this.port}${this.rtspPath}`;
-    } else {
-      this.fullRTSPUrl = `${this.protocol}://${this.publicIp}:${this.port}${this.rtspPath}`;
-    }
-  }
-  next();
-});
 
 export default mongoose.model<CCTVDocument>("CCTV", CCTVSchema);

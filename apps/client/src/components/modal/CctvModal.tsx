@@ -29,11 +29,7 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
   } = useForm<ICctv>({
     defaultValues: {
       name: "",
-      rtspPath: "",
-      publicIp: "",
-      port: "554",
-      username: "",
-      password: "",
+      fullUrl: "",
       location: "",
       camCode: "",
       isActive: true,
@@ -88,64 +84,17 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
             {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
           </div>
 
-          {/* RTSP Path */}
+          {/* Full URL */}
           <div>
-            <label htmlFor="rtspPath" className="text-sm font-medium">
-              RTSP Path
+            <label htmlFor="fullUrl" className="text-sm font-medium">
+              Full Stream URL
             </label>
             <Input
-              id="rtspPath"
-              placeholder="rtsp://user:pass@ip:port/path"
-              {...register("rtspPath", { required: "RTSP path is required" })}
+              id="fullUrl"
+              placeholder="rtsp://user:pass@ip:port/path or http://ip:port/path"
+              {...register("fullUrl", { required: "Stream URL is required" })}
             />
-            {errors.rtspPath && (
-              <p className="text-sm text-destructive">{errors.rtspPath.message}</p>
-            )}
-          </div>
-
-          {/* Public IP */}
-          <div>
-            <label htmlFor="publicIp" className="text-sm font-medium">
-              Public IP
-            </label>
-            <Input
-              id="publicIp"
-              placeholder="e.g., 192.168.0.1"
-              {...register("publicIp", { required: "Public IP is required" })}
-            />
-            {errors.publicIp && (
-              <p className="text-sm text-destructive">{errors.publicIp.message}</p>
-            )}
-          </div>
-
-          {/* Port */}
-          <div>
-            <label htmlFor="port" className="text-sm font-medium">
-              Port
-            </label>
-            <Input
-              id="port"
-              type="number"
-              placeholder="554"
-              {...register("port", { required: "Port is required" })}
-            />
-            {errors.port && <p className="text-sm text-destructive">{errors.port.message}</p>}
-          </div>
-
-          {/* Username */}
-          <div>
-            <label htmlFor="username" className="text-sm font-medium">
-              Username
-            </label>
-            <Input id="username" placeholder="Username" {...register("username")} />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
-            <Input id="password" type="password" placeholder="Password" {...register("password")} />
+            {errors.fullUrl && <p className="text-sm text-destructive">{errors.fullUrl.message}</p>}
           </div>
 
           {/* Location */}

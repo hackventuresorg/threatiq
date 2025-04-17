@@ -9,7 +9,7 @@ const createOrganization = async ({
   logoUrl,
   createdBy,
 }: any) => {
-  if (!name || !description || !location || !type || !logoUrl || !createdBy) {
+  if (!name || !description || !location || !type || !createdBy) {
     throw new BadRequestError("Please provide all the required fields");
   }
 
