@@ -6,7 +6,6 @@ import authRoutes from "./routes/auth";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
 import organizationRoutes from "./routes/organization";
 import cctvRoutes from "./routes/cctv";
-
 const app = express();
 
 app.use(cors());
@@ -28,7 +27,6 @@ app.use("/api/organization", organizationRoutes);
 app.use("/api/cctv", cctvRoutes);
 
 app.use(errorMiddleware);
-
 app.listen(PORT, () => {
   console.log(`🚀Server is running on http://localhost:${PORT}`);
 });
