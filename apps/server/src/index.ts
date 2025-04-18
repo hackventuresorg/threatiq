@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
 import organizationRoutes from "./routes/organization";
 import cctvRoutes from "./routes/cctv";
+import threatRouter from "./routes/threat"
 import { startRtspThreatPipeline } from "./controllers/rtsp_threat_pipeline";
 
 const app = express();
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/organization", organizationRoutes);
 app.use("/api/cctv", cctvRoutes);
+app.use("/api/threat", threatRouter)
 
 app.use(errorMiddleware);
 app.listen(PORT, () => {

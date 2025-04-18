@@ -5,4 +5,5 @@ interface ICctv {
   camCode: string;
   isActive: boolean;
   organization?: string;
+  _id: string;
 }

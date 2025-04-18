@@ -3,3 +3,4 @@ import User from "./user";
 import Organization from "./organization";
 
 export { CCTV, User, Organization };
+export * from './threat'

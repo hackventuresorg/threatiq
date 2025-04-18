@@ -1,6 +1,7 @@
 import { spawn } from "child_process";
 import { CCTV } from "../db/models";
 import { groqClient } from "../ai";
+import { createThreat, IThreat } from "./threat";
 
 const FRAME_EXTRACTION_INTERVAL = 5000;
 
@@ -66,6 +67,7 @@ function startStreamWorker(rtspUrl: string, cctvId: string) {
       const threat = await analyzeFrame(frame);
       console.log("Threat Analysis:", threat);
       if (threat.detected) {
+        await createThreat(threat as IThreat, cctvId)
         const timestamp = new Date().toISOString();
         console.log(`Threat detected on ${rtspUrl} at ${timestamp}`);
 

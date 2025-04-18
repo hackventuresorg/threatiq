@@ -6,6 +6,7 @@ import Home from "./pages/Introduction/Home";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { AuthProvider } from "./context/AuthProvider";
 import Organization from "./pages/dashboard/Organization";
+import Threat from "./pages/dashboard/Threat";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/organization/:orgId" element={<Organization />} />
+          <Route path="/cctv/:cctvId" element={<Threat />} />
         </Route>
         <Route
           path="*"
