@@ -5,7 +5,17 @@ const novu = new Novu({
   secretKey: NOVU_SECRET_KEY,
 });
 
-export async function sendNotification(subscriberId: string, payload: Record<string, any> = {}) {
+type NotificationPayload = {
+  notificationType: string
+  body: {
+    risk: string;
+    type: string;
+    time: string;
+    cctvName: string;
+  }
+} & Record<string, any>
+
+export async function sendNotification(subscriberId: string, payload: NotificationPayload) {
   try {
     const response = await novu.trigger({
       workflowId: IN_APP_WORKFLOW_ID,
