@@ -1,7 +1,8 @@
 import { spawn } from "child_process";
-import { CCTV } from "../db/models";
+import { CCTV, Organization, User } from "../db/models";
 import { groqClient } from "../ai";
 import { createThreat, IThreat } from "./threat";
+import { sendNotification } from "./notification";
 
 const FRAME_EXTRACTION_INTERVAL = 5000;
 
@@ -71,16 +72,15 @@ function startStreamWorker(rtspUrl: string, cctvId: string) {
         const timestamp = new Date().toISOString();
         console.log(`Threat detected on ${rtspUrl} at ${timestamp}`);
 
-        await CCTV.findByIdAndUpdate(cctvId, {
-          $push: {
-            detections: {
-              timestamp: new Date(),
-              threatType: threat.type || "unknown",
-              confidence: threat.confidence || 0,
-              imageData: frame.toString("base64"),
-            },
-          },
-        });
+        const cctv = await CCTV.findById(cctvId);
+
+        if (cctv) {
+          await sendNotificationsToOrgUsers(
+            cctv?.organization.toString() as string,
+            cctv,
+            threat as IThreat
+          );
+        }
       }
     }
   });
@@ -118,6 +118,57 @@ async function analyzeFrame(imageBuffer: Buffer) {
   } catch (err: any) {
     console.error("Groq API error:", err.message);
     return { detected: false };
+  }
+}
+
+async function sendNotificationsToOrgUsers(orgId: string, cctv: any, threat: IThreat) {
+  try {
+    const organization = await Organization.findById(orgId);
+    if (!organization) {
+      console.error(`Organization not found: ${orgId}`);
+      return;
+    }
+
+    const usersToNotify = new Set<string>();
+
+    if (organization.createdBy) {
+      const creator = await User.findById(organization.createdBy);
+      if (creator && creator.clerkId) {
+        usersToNotify.add(creator.clerkId);
+      }
+    }
+
+    if (organization.users && organization.users.length > 0) {
+      const orgUsers = await User.find({ _id: { $in: organization.users } });
+      orgUsers.forEach((user) => {
+        if (user.clerkId) {
+          usersToNotify.add(user.clerkId);
+        }
+      });
+    }
+
+    const notificationData = {
+      notificationType: "threat_detected",
+      body: {
+        risk: threat.risk_score ? `${threat.risk_score}/10` : "High",
+        type: threat.type || "Unknown",
+        time: new Date().toISOString(),
+        cctvName: cctv.name,
+      },
+      organization: organization.name,
+      cctvId: cctv._id.toString(),
+      cctvLocation: cctv.location,
+      threatDetails: threat.details,
+    };
+
+    const notificationPromises = Array.from(usersToNotify).map((userId) =>
+      sendNotification(userId, notificationData)
+    );
+
+    await Promise.allSettled(notificationPromises);
+    console.log(`Sent threat notifications to ${notificationPromises.length} users`);
+  } catch (error) {
+    console.error("Error sending threat notifications:", error);
   }
 }
 
