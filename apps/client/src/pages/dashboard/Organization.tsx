@@ -4,12 +4,13 @@ import { fetchCctvs } from "@/queries/cctv";
 import CctvModal from "@/components/modal/CctvModal";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Video, MapPin, Hash } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function Organization() {
   const [isCreateCctvOpen, setIsCreateCctvOpen] = useState(false);
   const { orgId } = useParams();
-
+  const navigate = useNavigate();
+  
   const {
     data: cctvs,
     isLoading,
@@ -91,7 +92,7 @@ export default function Organization() {
                   </div>
 
                   <div className="mt-6">
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => navigate(`/cctv/${cam._id}`)}>
                       View Stream
                     </Button>
                   </div>
