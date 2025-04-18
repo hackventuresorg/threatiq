@@ -14,8 +14,8 @@ async function main() {
         change.updateDescription?.updatedFields?.isActive === true)
     ) {
       const doc = change.fullDocument;
-      if (doc.isActive && doc.fullUrl) {
-        startStreamWorker(doc.fullUrl, doc._id as string);
+      if (doc?.isActive && doc?.fullUrl) {
+        startStreamWorker(doc?.fullUrl, doc?._id as string);
       }
     }
   });
@@ -25,7 +25,7 @@ async function main() {
 
   existingStreams.forEach((stream) => {
     if (stream.fullUrl) {
-      startStreamWorker(stream.fullUrl, stream._id as string);
+      startStreamWorker(stream.fullUrl, stream?._id as string);
     }
   });
 }
@@ -67,7 +67,7 @@ function startStreamWorker(rtspUrl: string, cctvId: string) {
       const threat = await analyzeFrame(frame);
       console.log("Threat Analysis:", threat);
       if (threat.detected) {
-        await createThreat(threat as IThreat, cctvId)
+        await createThreat(threat as IThreat, cctvId);
         const timestamp = new Date().toISOString();
         console.log(`Threat detected on ${rtspUrl} at ${timestamp}`);
 
@@ -119,10 +119,6 @@ async function analyzeFrame(imageBuffer: Buffer) {
     console.error("Groq API error:", err.message);
     return { detected: false };
   }
-}
-
-if (require.main === module) {
-  main().catch((err) => console.error("Error in RTSP threat pipeline:", err));
 }
 
 export { main as startRtspThreatPipeline };

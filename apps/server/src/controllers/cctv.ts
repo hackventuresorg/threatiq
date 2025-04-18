@@ -58,4 +58,55 @@ const getAllCCTV = async ({
   return cctvs;
 };
 
-export { createCCTV, getAllCCTV };
+const editCCTV = async ({
+  _id,
+  name,
+  location,
+  fullUrl,
+  isActive,
+  streamHealth,
+  organization,
+  tags,
+  detectionSettings,
+  user,
+}: any) => {
+  if (!_id) {
+    throw new BadRequestError("Please provide CCTV ID");
+  }
+
+  const org = await Organization.findOne({
+    _id: organization,
+    $or: [{ users: user }, { createdBy: user }],
+  });
+
+  if (!org) {
+    throw new BadRequestError("You are not authorized to access this organization");
+  }
+
+  const existingCCTV = await CCTV.findOne({
+    _id: _id,
+    organization: org._id,
+  });
+
+  if (!existingCCTV) {
+    throw new BadRequestError("CCTV not found or you don't have permission to edit it");
+  }
+
+  const updatedCCTV = await CCTV.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      location,
+      fullUrl,
+      isActive,
+      streamHealth,
+      tags,
+      detectionSettings,
+    },
+    { new: true, runValidators: true }
+  );
+
+  return updatedCCTV;
+};
+
+export { createCCTV, getAllCCTV, editCCTV };

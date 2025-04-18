@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/axios";
-import { createCctv } from "@/queries/cctv";
+import { createCctv, updateCctvStatus } from "@/queries/cctv";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,35 +11,60 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Video, PlusCircle } from "lucide-react";
+import { Video, PlusCircle, Edit } from "lucide-react";
 import { useParams } from "react-router-dom";
-interface CreateCctvModalProps {
+import { Switch } from "@/components/ui/switch";
+import { useEffect } from "react";
+import {
+  GET_CCTV_QUERY_KEY,
+  CREATE_CCTV_MUTATION_KEY,
+  UPDATE_CCTV_MUTATION_KEY,
+} from "@/constants";
+
+interface CctvModalProps {
   isOpen: boolean;
   onClose: () => void;
+  cctv?: ICctv;
 }
 
-export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
+export default function CctvModal({ isOpen, onClose, cctv }: CctvModalProps) {
   const { orgId } = useParams();
+  const isEditMode = !!cctv;
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ICctv>({
     defaultValues: {
       name: "",
       fullUrl: "",
       location: "",
-      camCode: "",
       isActive: true,
     },
   });
 
-  const cctvMutation = useMutation({
+  const isActive = watch("isActive");
+
+  useEffect(() => {
+    if (cctv && isEditMode) {
+      setValue("name", cctv.name);
+      setValue("fullUrl", cctv.fullUrl);
+      setValue("location", cctv.location);
+      setValue("isActive", cctv.isActive);
+    }
+  }, [cctv, isEditMode, setValue]);
+
+  const createMutation = useMutation({
+    mutationKey: [CREATE_CCTV_MUTATION_KEY],
     mutationFn: createCctv,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["get-cctvs"] });
+      queryClient.invalidateQueries({
+        queryKey: [[GET_CCTV_QUERY_KEY, orgId]],
+      });
       reset();
       onClose();
     },
@@ -48,9 +73,30 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationKey: [UPDATE_CCTV_MUTATION_KEY],
+    mutationFn: updateCctvStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [[GET_CCTV_QUERY_KEY, orgId]],
+      });
+      reset();
+      onClose();
+    },
+    onError: (error) => {
+      console.error("Error updating CCTV:", error);
+    },
+  });
+
   const onSubmit: SubmitHandler<ICctv> = (data) => {
-    cctvMutation.mutate({ ...data, organization: orgId });
+    if (isEditMode && cctv) {
+      updateMutation.mutate({ ...data, _id: cctv?._id, organization: cctv?.organization });
+    } else {
+      createMutation.mutate({ ...data, organization: orgId });
+    }
   };
+
+  const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
     <Dialog
@@ -66,7 +112,9 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
         <DialogHeader>
           <div className="flex items-center space-x-2">
             <Video className="h-5 w-5 text-primary" />
-            <DialogTitle className="text-xl font-semibold">Add CCTV</DialogTitle>
+            <DialogTitle className="text-xl font-semibold">
+              {isEditMode ? "Edit CCTV" : "Add CCTV"}
+            </DialogTitle>
           </div>
         </DialogHeader>
 
@@ -112,25 +160,17 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
             )}
           </div>
 
-          {/* Cam Code */}
-          <div>
-            <label htmlFor="camCode" className="text-sm font-medium">
-              Camera Code
-            </label>
-            <Input
-              id="camCode"
-              placeholder="e.g., CAM123"
-              {...register("camCode", { required: "Camera code is required" })}
-            />
-            {errors.camCode && <p className="text-sm text-destructive">{errors.camCode.message}</p>}
-          </div>
-
-          {/* Is Active */}
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="isActive" {...register("isActive")} />
+          {/* Is Active - Switch instead of checkbox */}
+          <div className="flex items-center justify-between">
             <label htmlFor="isActive" className="text-sm font-medium">
               Active
             </label>
+            <Switch
+              id="isActive"
+              checked={isActive}
+              onCheckedChange={(checked) => setValue("isActive", checked)}
+            />
+            <input type="hidden" {...register("isActive")} />
           </div>
 
           {/* Buttons */}
@@ -145,16 +185,20 @@ export default function CctvModal({ isOpen, onClose }: CreateCctvModalProps) {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={cctvMutation.isPending || isSubmitting}>
-              {cctvMutation.isPending ? (
+            <Button type="submit" disabled={isPending || isSubmitting}>
+              {isPending ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Creating
+                  {isEditMode ? "Updating" : "Creating"}
                 </>
               ) : (
                 <>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Create
+                  {isEditMode ? (
+                    <Edit className="mr-2 h-4 w-4" />
+                  ) : (
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                  )}
+                  {isEditMode ? "Update" : "Create"}
                 </>
               )}
             </Button>

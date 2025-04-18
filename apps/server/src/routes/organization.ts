@@ -31,8 +31,6 @@ router.post("/", authenticateUser, async (req: Request, res: Response, next: Nex
       createdBy: user._id,
     });
 
-    console.log("Organization created successfully::", organization);
-
     res.status(201).json({ message: "Organization created successfully", organization });
   } catch (error) {
     next(error);

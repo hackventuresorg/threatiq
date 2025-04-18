@@ -19,7 +19,6 @@ const ThreatSchema = new Schema<IThreat>(
   {
     type: {
       type: String,
-      enum: ["suspicious_behavior"],
       required: true,
     },
     confidence: {
@@ -51,4 +50,4 @@ const ThreatSchema = new Schema<IThreat>(
   }
 );
 
-export const Threat = model<IThreat>("Threat",ThreatSchema);
+export const Threat = model<IThreat>("Threat", ThreatSchema);
