@@ -12,3 +12,4 @@ export const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY || "";
 export const AWS_SECRET_KEY = process.env.AWS_SECRET_KEY || "";
 export const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME || "";
 export const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+export const ENABLE_RTSP_STREAMING = process.env.ENABLE_RTSP_STREAMING || false;

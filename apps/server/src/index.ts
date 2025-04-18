@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { PORT } from "./environments";
+import { PORT, ENABLE_RTSP_STREAMING } from "./environments";
 import connectDB from "./db";
 import authRoutes from "./routes/auth";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
@@ -32,7 +32,9 @@ app.use(errorMiddleware);
 app.listen(PORT, () => {
   console.log(`🚀Server is running on http://localhost:${PORT}`);
 
-  startRtspThreatPipeline().catch((err) =>
-    console.error("Failed to start RTSP threat pipeline:", err)
-  );
+  if (ENABLE_RTSP_STREAMING) {
+    startRtspThreatPipeline().catch((err) =>
+      console.error("Failed to start RTSP threat pipeline:", err)
+    );
+  }
 });
