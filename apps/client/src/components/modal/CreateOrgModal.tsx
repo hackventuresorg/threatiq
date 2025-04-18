@@ -43,7 +43,7 @@ export default function CreateOrgModal({ isOpen, onClose }: CreateOrgModalProps)
     mutationKey: [CREATE_ORGANIZATION_MUTATION_KEY],
     mutationFn: createOrganization,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [GET_ORGANIZATIONS_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: [[GET_ORGANIZATIONS_QUERY_KEY]] });
       toast.success("Organization created successfully");
       reset();
       onClose();

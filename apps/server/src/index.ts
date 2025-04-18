@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
-import { PORT } from "./environments";
+import { PORT, ENABLE_RTSP_STREAMING } from "./environments";
 import connectDB from "./db";
 import authRoutes from "./routes/auth";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
 import organizationRoutes from "./routes/organization";
 import cctvRoutes from "./routes/cctv";
-import threatRouter from "./routes/threat"
+import threatRouter from "./routes/threat";
 import { startRtspThreatPipeline } from "./controllers/rtsp_threat_pipeline";
 
 const app = express();
@@ -28,13 +28,15 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/organization", organizationRoutes);
 app.use("/api/cctv", cctvRoutes);
-app.use("/api/threat", threatRouter)
+app.use("/api/threat", threatRouter);
 
 app.use(errorMiddleware);
 app.listen(PORT, () => {
   console.log(`🚀Server is running on http://localhost:${PORT}`);
+});
 
+if (ENABLE_RTSP_STREAMING === "true") {
   startRtspThreatPipeline().catch((err) =>
     console.error("Failed to start RTSP threat pipeline:", err)
   );
-});
+}

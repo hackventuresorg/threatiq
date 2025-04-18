@@ -14,3 +14,4 @@ export const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME || "";
 export const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 export const NOVU_SECRET_KEY = process.env.NOVU_SECRET_KEY || "";
 export const IN_APP_WORKFLOW_ID = process.env.IN_APP_WORKFLOW_ID || ""; 
+export const ENABLE_RTSP_STREAMING = process.env.ENABLE_RTSP_STREAMING || false;

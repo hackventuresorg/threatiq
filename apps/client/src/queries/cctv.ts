@@ -9,3 +9,8 @@ export async function createCctv(cctvData: ICctv) {
   const { data } = await apiClient.post("/cctv", cctvData);
   return data;
 }
+
+export async function updateCctvStatus(cctvData: ICctv) {
+  const { data } = await apiClient.put(`/cctv`, cctvData);
+  return data;
+}
