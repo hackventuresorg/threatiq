@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { SignOutButton, useUser } from "@clerk/clerk-react";
+import { SignedIn, SignOutButton, useUser } from "@clerk/clerk-react";
 import { Menu, Shield, X, User } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NotificationCenter } from "../notification-center";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -36,6 +37,9 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center space-x-3">
+          <SignedIn>
+          <NotificationCenter />
+          </SignedIn>
           {isLoaded && isSignedIn ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
