@@ -8,8 +8,16 @@ import organizationRoutes from "./routes/organization";
 import cctvRoutes from "./routes/cctv";
 import threatRouter from "./routes/threat";
 import { startRtspThreatPipeline } from "./controllers/rtsp_threat_pipeline";
+import { Server } from "socket.io";
 
 const app = express();
+
+export const io = new Server(7000, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
 app.use(cors());
 app.use(express.json());

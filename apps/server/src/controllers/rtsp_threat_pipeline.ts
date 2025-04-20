@@ -3,6 +3,7 @@ import { CCTV, Organization, User } from "../db/models";
 import { groqClient } from "../ai";
 import { createThreat, IThreat } from "./threat";
 import { sendNotification } from "./notification";
+import { io } from "../index";
 
 const FRAME_EXTRACTION_INTERVAL = 5000;
 
@@ -68,6 +69,7 @@ function startStreamWorker(rtspUrl: string, cctvId: string) {
       const threat = await analyzeFrame(frame);
       console.log("Threat Analysis:", threat);
       if (threat.detected) {
+        io.emit('threat-detected', threat)
         await createThreat(threat as IThreat, cctvId);
         const timestamp = new Date().toISOString();
         console.log(`Threat detected on ${rtspUrl} at ${timestamp}`);

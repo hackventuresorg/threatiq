@@ -7,7 +7,10 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import { AuthProvider } from "./context/AuthProvider";
 import Organization from "./pages/dashboard/Organization";
 import Threat from "./pages/dashboard/Threat";
+import {io, Socket} from "socket.io-client";
+import { SOCKET_IO_URL } from "./environments";
 
+const socket: Socket = io(SOCKET_IO_URL);
 function App() {
   return (
     <AuthProvider>
@@ -19,7 +22,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/organization/:orgId" element={<Organization />} />
-          <Route path="/cctv/:cctvId" element={<Threat />} />
+          <Route path="/cctv/:cctvId" element={<Threat socket={socket} />} />
         </Route>
         <Route
           path="*"
