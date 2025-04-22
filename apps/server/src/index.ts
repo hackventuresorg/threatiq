@@ -20,7 +20,6 @@ export const io = new Server(7000, {
 });
 
 app.use(cors());
-
 app.use(express.json());
 
 connectDB();
