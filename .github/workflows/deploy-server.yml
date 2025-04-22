@@ -42,7 +42,7 @@ jobs:
             pnpm turbo run build --filter=server
 
             # Restart the server using PM2
-            pm2 restart server || pm2 start apps/server/dist/index.js --name server
+            pm2 start ecosystem.config.js || pm2 reload ecosystem.config.js
 
             pm2 save
           EOF
