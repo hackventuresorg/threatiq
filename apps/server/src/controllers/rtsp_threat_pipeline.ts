@@ -6,7 +6,7 @@ import { sendNotification } from "./notification";
 import { io } from "../index";
 
 const FRAME_EXTRACTION_INTERVAL = 5000;
-
+const activeStreams = new Map<string, ReturnType<typeof spawn>>();
 async function main() {
   console.log("Watching CCTV streams for updates...");
   CCTV.watch().on("change", (change) => {
@@ -32,7 +32,7 @@ async function main() {
   });
 }
 
-function startStreamWorker(rtspUrl: string, cctvId: string) {
+export function startStreamWorker(rtspUrl: string, cctvId: string) {
   console.log(`Starting stream worker for ${rtspUrl}`);
 
   const ffmpeg = spawn("ffmpeg", [
@@ -52,7 +52,7 @@ function startStreamWorker(rtspUrl: string, cctvId: string) {
     "mjpeg",
     "pipe:1",
   ]);
-
+  activeStreams.set(cctvId, ffmpeg);
   let buffer = Buffer.alloc(0);
   let connectionFailed = false;
 
@@ -69,7 +69,7 @@ function startStreamWorker(rtspUrl: string, cctvId: string) {
       const threat = await analyzeFrame(frame);
       console.log("Threat Analysis:", threat);
       if (threat.detected) {
-        io.emit('threat-detected', threat)
+        io.emit("threat-detected", threat);
         await createThreat(threat as IThreat, cctvId);
         const timestamp = new Date().toISOString();
         console.log(`Threat detected on ${rtspUrl} at ${timestamp}`);
@@ -112,6 +112,20 @@ function startStreamWorker(rtspUrl: string, cctvId: string) {
   });
 
   ffmpeg.on("exit", (code) => {});
+}
+
+export function stopStreamWorker(rtspUrl: string, cctvId: string) {
+  console.log("stop stream runn");
+  console.log(`Stopping stream worker for ${rtspUrl}`);
+
+  const ffmpeg = activeStreams.get(cctvId);
+  if (ffmpeg) {
+    ffmpeg.kill("SIGTERM");
+    activeStreams.delete(cctvId);
+    console.log(`Stream worker for ${rtspUrl} stopped`);
+  } else {
+    console.warn(`No active stream found for ${rtspUrl}`);
+  }
 }
 
 async function analyzeFrame(imageBuffer: Buffer) {

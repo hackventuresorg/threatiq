@@ -3,6 +3,7 @@ import { authenticateUser } from "../middlewares/authMiddleware";
 import { NextFunction, Request, Response } from "express";
 import { User } from "../db/models";
 import { createCCTV, getAllCCTV, editCCTV } from "../controllers/cctv";
+import { startStreamWorker, stopStreamWorker } from "../controllers/rtsp_threat_pipeline";
 
 const router = Router();
 
@@ -63,6 +64,12 @@ router.put("/", authenticateUser, async (req: Request, res: Response, next: Next
       tags,
       detectionSettings,
     } = req.body;
+
+    if(isActive){
+      startStreamWorker(fullUrl, _id)
+    } else {
+      stopStreamWorker(fullUrl, _id)
+    }
 
     const cctv = await editCCTV({
       _id,
