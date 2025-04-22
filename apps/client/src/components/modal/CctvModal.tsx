@@ -80,8 +80,8 @@ export default function CctvModal({ isOpen, onClose, cctv }: CctvModalProps) {
       queryClient.invalidateQueries({
         queryKey: [[GET_CCTV_QUERY_KEY, orgId]],
       });
-      reset();
       onClose();
+      reset();
     },
     onError: (error) => {
       console.error("Error updating CCTV:", error);
@@ -103,8 +103,8 @@ export default function CctvModal({ isOpen, onClose, cctv }: CctvModalProps) {
       open={isOpen}
       onOpenChange={(open) => {
         if (!open) {
-          reset();
           onClose();
+          reset();
         }
       }}
     >
