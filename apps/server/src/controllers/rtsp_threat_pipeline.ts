@@ -69,7 +69,8 @@ export function startStreamWorker(rtspUrl: string, cctvId: string) {
       const threat = await analyzeFrame(frame);
       console.log("Threat Analysis:", threat);
       if (threat.detected) {
-        io.emit("threat-detected", threat);
+        const threatToEmit = { ...threat, createdAt: new Date() };
+        io.emit("threat-detected", threatToEmit);
         await createThreat(threat as IThreat, cctvId);
         const timestamp = new Date().toISOString();
         console.log(`Threat detected on ${rtspUrl} at ${timestamp}`);
