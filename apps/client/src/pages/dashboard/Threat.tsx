@@ -46,13 +46,13 @@ interface ThreatDashboardProps {
   socket: Socket;
 }
 
-export default function ThreatDashboard({ socket }: ThreatDashboardProps)  {
+export default function ThreatDashboard({ socket }: ThreatDashboardProps) {
   const { cctvId } = useParams();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedThreat, setSelectedThreat] = useState<IThreat | null>(null);
   const queryClient = useQueryClient();
-  
+
   const {
     data: threats,
     isLoading,
@@ -101,19 +101,19 @@ export default function ThreatDashboard({ socket }: ThreatDashboardProps)  {
     }
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     const handleNewThreat = (newThreat: IThreat) => {
       queryClient.setQueryData<IThreat[]>(["get-threats", cctvId], (old) =>
         old ? [newThreat, ...old] : [newThreat]
       );
     };
-    
+
     socket.on("threat-detected", handleNewThreat);
 
     return () => {
       socket.off("threat-detected", handleNewThreat);
     };
-  }, [socket])
+  }, [cctvId, queryClient, socket]);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-8 px-6">

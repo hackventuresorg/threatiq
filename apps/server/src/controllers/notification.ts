@@ -6,14 +6,14 @@ const novu = new Novu({
 });
 
 type NotificationPayload = {
-  notificationType: string
+  notificationType: string;
   body: {
     risk: string;
     type: string;
-    time: string;
+    createdAt: string;
     cctvName: string;
-  }
-} & Record<string, any>
+  };
+} & Record<string, any>;
 
 export async function sendNotification(subscriberId: string, payload: NotificationPayload) {
   try {

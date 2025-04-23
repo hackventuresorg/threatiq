@@ -168,7 +168,7 @@ async function sendNotificationsToOrgUsers(orgId: string, cctv: any, threat: ITh
       body: {
         risk: threat.risk_score ? `${threat.risk_score}/10` : "High",
         type: threat.type || "Unknown",
-        time: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
         cctvName: cctv.name,
       },
       organization: organization.name,
